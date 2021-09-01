@@ -15,32 +15,26 @@ import java.util.List;
 public class RestuAdapter extends RecyclerView.Adapter<RestuAdapter.RestuViewHolder> {
 
     List<Restu>allRestu=new ArrayList<>();
-    OnClicListeners onClicListeners;
-    public RestuAdapter(List<Restu> allRestu,OnClicListeners onClicListeners) {
+    public RestuAdapter(List<Restu> allRestu) {
         this.allRestu = allRestu;
-        this.onClicListeners=onClicListeners;
     }
 
-    public static class RestuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class RestuViewHolder extends RecyclerView.ViewHolder {
         public Restu restu;
         View itemView;
-        OnClicListeners onClicListeners;
-        public RestuViewHolder(@NonNull  View itemView,OnClicListeners onClicListeners) {
+        public RestuViewHolder(@NonNull  View itemView) {
             super(itemView);
             this.itemView=itemView;
-            this.onClicListeners=onClicListeners;
-            itemView.setOnClickListener(this);
+            itemView.findViewById(R.id.fragment).setOnClickListener((v)->{
+            Intent intent=new Intent(itemView.getContext(),DetailsOfDish.class);
+
+        intent.putExtra("name",restu.name);
+        intent.putExtra("price",restu.price);
+        intent.putExtra("ingredient",restu.ingredient);
+        itemView.getContext().startActivity(intent);
+            });
         }
 
-        @Override
-        public void onClick(View v) {
-            onClicListeners.onClicks(getAdapterPosition());
-
-
-        }
-    }
-    public interface OnClicListeners{
-        void onClicks(int position);
     }
 
     @NonNull
@@ -48,7 +42,7 @@ public class RestuAdapter extends RecyclerView.Adapter<RestuAdapter.RestuViewHol
     @Override
     public RestuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_restu,parent,false);
-        RestuViewHolder restuViewHolder=new RestuViewHolder(view,onClicListeners);
+        RestuViewHolder restuViewHolder=new RestuViewHolder(view);
         return restuViewHolder;
     }
 

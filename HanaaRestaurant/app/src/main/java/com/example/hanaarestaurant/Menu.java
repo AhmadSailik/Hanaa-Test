@@ -9,20 +9,21 @@ import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 
 import java.util.List;
 
-public class Menu extends AppCompatActivity implements RestuAdapter.OnClicListeners {
+public class Menu extends AppCompatActivity  {
 DashDatabase dashDatabase;
-RestuAdapter.OnClicListeners onClicListeners;
-Restu restu;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -31,22 +32,18 @@ Restu restu;
         Button button=findViewById(R.id.homePage);
         button.setOnClickListener((v)->{
             Intent intent=new Intent(Menu.this,MainActivity.class);
+            startActivity(intent);
         });
         dashDatabase =  Room.databaseBuilder(getApplicationContext(), DashDatabase.class, "dashDatas").allowMainThreadQueries().build();
         List<Restu> dashList=dashDatabase.dashDao().getAll();
         RecyclerView allTaskRecyclerView=findViewById(R.id.recyclerView);
         allTaskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        allTaskRecyclerView.setAdapter(new RestuAdapter(dashList, onClicListeners));
+        allTaskRecyclerView.setAdapter(new RestuAdapter(dashList));
+    }
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivityForResult(myIntent, 0);
+        return true;
     }
 
-    @Override
-    public void onClicks(int position) {
-
-        Intent intent=new Intent(Menu.this,DetailsOfDish.class);
-//        Intent intent=new Intent(itemView.getContext(),DetailsOfDish.class);
-        intent.putExtra("name",restu.name);
-        intent.putExtra("price",restu.price);
-        intent.putExtra("ingredient",restu.ingredient);
-        startActivity(intent);
-    }
 }
